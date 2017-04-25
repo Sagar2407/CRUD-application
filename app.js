@@ -7,6 +7,11 @@ var Book = require('./Book.model.js');
 var db = 'mongodb://localhost/example';
 mongoose.connect(db);
 
+app.use(bodyParser.json());	//telling explicitly to use body Parser to parse the json objects
+app.use(bodyParser.urlencoded({		//urlencoded will help us in getting the elements from thr body elements to the url
+	extended: true
+}));
+
 app.get('/', function(req, res){  // get method is a property of express framework and the other function is a callback.
 	res.send('Hello World');		// Hello World on the localhost:8009.
 })
@@ -19,7 +24,7 @@ app.get('/books', function(req,res){		// '/books' is a router which we get throu
 			res.send('Error has occured');
 		}
 		else{
-			//console.log(books);		//consols to the node js console.
+			console.log(books);		//consols to the node js console.
 			res.json(books);	// json parsing of the objects
 		}
 	})
@@ -41,7 +46,34 @@ app.get('/books/:id',function(req,res){		//Code to find just one book  Look how 
 	})
 })
 
+ app.post('/books', function (req,res) {		//we are posting now instead of get
+	var newBook = new Book();
+	newBook.title = req.body.title;
+	newBook.author = req.body.author;
+	newBook.category = req.body.category;
 
+	newBook.save(function (err,book) {
+		if(err){
+			console.log("Some error has occured");
+		}
+		else{
+			console.log(book);
+			res.send(book);
+		}
+    });
+});
+
+app.post('/books2', function (req,res) {		//works the same way as the previous one.
+	Book.create(req.body, function (err, book) {	//The difference being that we are not requesting element one by one.
+        if(err){
+            console.log("Some error has occured");
+        }
+        else{
+            console.log(book);
+            res.send(book);
+        }
+    });
+})
 var port = 8009;  // localhost:8009
 
 app.listen(port, function(){		//function is the call back function to show the console. Also "app.listen will start the server and start lsitening on port 8009"
