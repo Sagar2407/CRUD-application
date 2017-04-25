@@ -76,6 +76,39 @@ app.post('/books2', function (req,res) {		//works the same way as the previous o
 })
 var port = 8009;  // localhost:8009
 
+app.put('/books/:id', function (req, res) {
+	Book.findOneAndUpdate({
+	_id: req.params.id		//This is a main query
+	},
+		{$set: {title: req.body.title}},	//this is a condition
+		{upsert:true},					//optional parameter
+		function (err,newBook) {		//callback
+			if(err){
+				console.log("Error occurred");
+			}
+			else{
+				console.log(newBook);
+				res.status(204);		//this will indicate that the book was updated correctly.
+				// res.send(newBook)	this would also work instead of the previous line.
+			}
+        });
+});
+
+app.delete('/books/:id', function (req,res) {
+	Book.findOneAndRemove({
+		_id: req.params.id
+	},function (err,book) {
+		if(err){
+			console.log("Error has occurred")
+		}
+		else{
+			console.log(book)
+			res.status(204)		//This line explain that the code has operation was fine,
+		}
+        }
+	)
+})
+
 app.listen(port, function(){		//function is the call back function to show the console. Also "app.listen will start the server and start lsitening on port 8009"
 	console.log("App listening on port: "+ port);
 });
