@@ -1,0 +1,7 @@
+build/
+build-mock/
+out/
+out-mock/
+.env
+__pycache__/
+music/
